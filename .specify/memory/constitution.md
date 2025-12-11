@@ -1,55 +1,78 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+Version change: 1.0.0 → 2.0.0
+Modified principles: All principles replaced with new set
+Removed sections: Old principles and constraints
+Added sections: New core principles, documentation framework, content curriculum, RAG tech stack, deployment strategy, constraints, and success criteria
+Templates requiring updates: ⚠ pending - .specify/templates/plan-template.md, .specify/templates/spec-template.md, .specify/templates/tasks-template.md
+Follow-up TODOs: None
+-->
+# Physical AI & Humanoid Robotics: Interactive Docusaurus Book & RAG Agent Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Spec-Driven Development
+Strict adherence to Spec-Kit Plus workflow for all development activities. All features, changes, and implementations must be documented in specifications before implementation begins.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. AI-First Authorship
+Primary content generation via Claude Code with human oversight. All educational content, code examples, and interactive elements originate from AI-assisted development processes.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Interactive Pedagogy
+Learning through reading AND active querying. The educational experience combines traditional textbook content with real-time AI interaction capabilities for enhanced comprehension.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Embodied Intelligence
+Focus on bridging digital AI with physical robotics. Content emphasizes the connection between artificial intelligence algorithms and their manifestation in physical robotic systems.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Modular Architecture
+Decoupling book content from chatbot backend while maintaining seamless integration. Components must function independently while providing unified user experience.
 
-### [PRINCIPLE_6_NAME]
+## Documentation Framework
 
+- Static Site Generator: Docusaurus (React-based)
+- Content Format: Markdown with interactive React components
+- Navigation: Hierarchical structure supporting 4 modules plus capstone
 
-[PRINCIPLE__DESCRIPTION]
+## Content Curriculum
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+- Module 1: ROS 2 & rclpy (Robotic Nervous System)
+- Module 2: Gazebo & Unity (Digital Twin/Simulation)
+- Module 3: NVIDIA Isaac Sim & Nav2 (AI-Robot Brain)
+- Module 4: VLA & OpenAI Whisper (Vision-Language-Action)
+- Capstone: "The Autonomous Humanoid" final project specifications
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## RAG Tech Stack
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+- Frontend: OpenAI Agents / ChatKit SDKs
+- Backend: FastAPI (Python)
+- Database: Neon Serverless Postgres
+- Vector Store: Qdrant Cloud (Free Tier)
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Deployment Strategy
+
+- Book: GitHub Pages
+- API Backend: Cloud Hosting (compatible with FastAPI)
+- Integration: Embedded chatbot directly into Docusaurus pages
+
+## Constraints
+
+- Tooling: Must utilize Claude Code CLI and Spec-Kit Plus structure
+- Integration: Chatbot must be embedded directly into Docusaurus pages
+- Context Window: Bot must support answering questions based on user-selected text
+- Cost Efficiency: Architecture must utilize free-tier resources (Qdrant/Neon) where possible
+- Capstone: Must include "The Autonomous Humanoid" final project specifications
+
+## Success Criteria
+
+- Live Book: Docusaurus site successfully deployed to GitHub Pages
+- Functional RAG: Chatbot accurately answers questions derived from book content
+- Feature verification: User can select text on a page and query the bot specifically about that selection
+- Curriculum Completeness: All 4 Modules and Capstone fully written and coded
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution governs all development decisions for the Physical AI & Humanoid Robotics project. All implementations must align with the mission to create an interactive educational experience that bridges digital AI with physical robotics. Changes to core architecture or feature sets require explicit reconsideration of how they support the pedagogical objectives and technical constraints. All code reviews must verify compliance with modular architecture, documentation standards, and cost efficiency requirements.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 2.0.0 | **Ratified**: 2025-12-10 | **Last Amended**: 2025-12-10
+
+
+

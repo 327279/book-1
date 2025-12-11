@@ -1,0 +1,243 @@
+/**
+ * Professional Academic Book Styling
+ */
+
+:root {
+  /* Professional Color Palette */
+  --ifm-color-primary: #1a365d;       /* Deep navy blue */
+  --ifm-color-primary-dark: #142a48;  /* Darker navy */
+  --ifm-color-primary-darker: #0f1f37; /* Even darker */
+  --ifm-color-primary-darkest: #0a1424; /* Darkest */
+  --ifm-color-primary-light: #244d77;  /* Lighter navy */
+  --ifm-color-primary-lighter: #3a6699; /* Medium blue */
+  --ifm-color-primary-lightest: #5080bb; /* Light blue */
+
+  /* Secondary Colors */
+  --ifm-color-secondary: #4a5568;      /* Gray */
+  --ifm-color-accent: #3182ce;         /* Professional blue accent */
+
+  --ifm-code-font-size: 95%;
+
+  /* Spacing and Layout */
+  --ifm-spacing-horizontal: 2rem;
+  --ifm-spacing-vertical: 2rem;
+
+  /* Typography */
+  --ifm-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --ifm-line-height-base: 1.6;
+
+  /* Card and container styling */
+  --ifm-card-background-color: #ffffff;
+  --ifm-card-border-radius: 8px;
+  --ifm-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] {
+  --ifm-color-primary: #4a9fe3;
+  --ifm-color-primary-dark: #3a8dcc;
+  --ifm-color-primary-darker: #2a7db9;
+  --ifm-color-primary-darkest: #1a6da6;
+  --ifm-color-primary-light: #5aa5e6;
+  --ifm-color-primary-lighter: #6aabeb;
+  --ifm-color-primary-lightest: #7bb2ee;
+
+  /* Dark mode specific variables */
+  --ifm-background-color: #0f172a;
+  --ifm-card-background-color: #1e293b;
+}
+
+/* Header and Navbar Enhancements */
+.navbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.navbar__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.navbar__logo img {
+  height: 2.5rem;
+}
+
+/* Main Container Styling */
+.main-wrapper {
+  background-color: var(--ifm-background-color);
+}
+
+.container {
+  max-width: 1400px;
+  padding-left: var(--ifm-spacing-horizontal);
+  padding-right: var(--ifm-spacing-horizontal);
+}
+
+/* Doc Page Enhancements */
+.theme-doc-page {
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+/* Sidebar Enhancements */
+.menu {
+  padding: 1.5rem 1rem;
+}
+
+.menu__list-item {
+  margin-bottom: 0.25rem;
+}
+
+.menu__link {
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  margin: 0.25rem 0;
+  transition: all 0.2s ease;
+}
+
+.menu__link:hover {
+  background-color: var(--ifm-menu-color-background-hover);
+}
+
+/* Content Cards and Blocks */
+.card {
+  border: none;
+  box-shadow: var(--ifm-card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Code Block Enhancements */
+.prism-code {
+  border-radius: 8px;
+  font-size: 0.9em;
+  line-height: 1.5;
+  padding: 1rem;
+}
+
+/* Button Styling */
+.button {
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+/* Footer Enhancements */
+.footer {
+  background-color: var(--ifm-background-surface-color);
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+  margin-top: 4rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+/* Typography Enhancements */
+.markdown h1 {
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.markdown h2 {
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.markdown h3 {
+  font-weight: 500;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Blockquote Styling */
+.markdown blockquote {
+  border-left: 4px solid var(--ifm-color-primary);
+  background-color: var(--ifm-color-emphasis-100);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Table Styling */
+.markdown table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.markdown th, .markdown td {
+  padding: 0.75rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+}
+
+/* List Enhancements */
+.markdown ul, .markdown ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.markdown li {
+  margin-bottom: 0.5rem;
+}
+
+/* Link Styling */
+.markdown a {
+  text-decoration: none;
+  border-bottom: 1px dotted currentColor;
+}
+
+.markdown a:hover {
+  border-bottom-style: solid;
+  text-decoration: none;
+}
+
+/* Highlight and Admonition Blocks */
+.alert {
+  border-radius: 8px;
+  border-left-width: 4px;
+  padding: 1.25rem 1.5rem;
+}
+
+/* Search Bar Enhancements */
+.navbar__search-input {
+  border-radius: 4px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  padding: 0.5rem 1rem;
+}
+
+/* Breadcrumb Enhancements */
+.theme-doc-breadcrumb {
+  padding: 0.5rem 0;
+  margin-bottom: 1.5rem;
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.08);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+[data-theme='dark'] .docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 996px) {
+  .navbar__inner {
+    padding: 0 1rem;
+  }
+
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
