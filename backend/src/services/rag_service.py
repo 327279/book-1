@@ -55,19 +55,14 @@ class RAGService:
 
     def _generate_response(self, query_text: str, selected_text: Optional[str], search_results: List[Dict[str, Any]]) -> str:
         """
-        Generate a response based on the query and retrieved results using OpenAI
+        Generate a response based on the query and retrieved results using Gemini
         """
         from ..agents.skills import AgentSkills
         agent = AgentSkills()
         
         if not search_results:
-            return agent.client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a helpful AI assistant for a robotics textbook. The user asked a question but I couldn't find relevant content in the book. Answer politely based on your general knowledge, but mention that it's outside the book's scope."},
-                    {"role": "user", "content": query_text}
-                ]
-            ).choices[0].message.content
+            fallback_prompt = f"User asked: '{query_text}'. I couldn't find relevant content in the book. Answer politely based on general knowledge, but mention that it's outside the book's scope."
+            return agent._generate(fallback_prompt)
 
         # Combine the retrieved results to form a context
         context = "\n\n".join([result["chunk_text"] for result in search_results[:3]])  # Use top 3 results
@@ -82,19 +77,11 @@ class RAGService:
         If selected text is provided, focus the answer on that specific section.
         """
         
-        user_prompt = f"Question: {query_text}"
+        user_prompt = f"{system_prompt}\n\nQuestion: {query_text}"
         if selected_text:
             user_prompt += f"\n\nSelected Text: {selected_text}"
 
-        response = agent.client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ]
-        )
-
-        return response.choices[0].message.content
+        return agent._generate(user_prompt)
 
     def index_document(self, db: Session, document: Any) -> bool:
         """

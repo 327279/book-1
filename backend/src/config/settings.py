@@ -10,8 +10,10 @@ class Settings(BaseSettings):
     qdrant_api_key: Optional[str] = None
 
     # OpenAI Configuration
-    openai_api_key: Optional[str] = None
-    model_name: str = "text-embedding-ada-002"
+    # Gemini Configuration
+    gemini_api_key: Optional[str] = None
+    model_name: str = "gemini-pro"
+    embedding_model_name: str = "models/embedding-001"
 
     # Application Configuration
     debug: bool = True
@@ -23,5 +25,6 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+        extra = "ignore"
 
 settings = Settings()

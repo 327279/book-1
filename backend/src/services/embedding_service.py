@@ -3,12 +3,14 @@ from qdrant_client import models
 from ..config.database import qdrant_client
 from ..models.document import Document
 import uuid
-import openai
+import google.generativeai as genai
 from ..config.settings import settings
 
 class EmbeddingService:
     def __init__(self):
-        self.collection_name = "book_content"
+        self.collection_name = "book_content_gemini"  # Changed name to avoid conflict with old collection
+        if settings.gemini_api_key:
+            genai.configure(api_key=settings.gemini_api_key)
         self._create_collection_if_not_exists()
 
     def _create_collection_if_not_exists(self):
@@ -19,9 +21,10 @@ class EmbeddingService:
             qdrant_client.get_collection(self.collection_name)
         except:
             # Collection doesn't exist, create it
+            # Gemini embeddings are 768 dimensions
             qdrant_client.create_collection(
                 collection_name=self.collection_name,
-                vectors_config=models.VectorParams(size=1536, distance=models.Distance.COSINE),  # Assuming OpenAI embeddings
+                vectors_config=models.VectorParams(size=768, distance=models.Distance.COSINE),
             )
 
     def create_embedding(self, document_id: str, chunk_text: str, chunk_index: int, vector: List[float], metadata: dict = None) -> str:
@@ -84,7 +87,7 @@ class EmbeddingService:
                     )
                 ]
             ),
-            limit=10000  # Assuming max 10k chunks per document
+            limit=10000
         )
 
         point_ids = [point.id for point in search_results[0]]
@@ -107,29 +110,23 @@ class EmbeddingService:
 
         while start < len(content):
             end = start + chunk_size
-
-            # If we're near the end, make sure to include the rest
             if end > len(content):
                 end = len(content)
             else:
-                # Try to break at sentence boundary
                 while end < len(content) and content[end] not in '.!?。！？\n' and end - start < chunk_size + 50:
                     end += 1
                 if end < len(content):
-                    end += 1  # Include the sentence ending punctuation
+                    end += 1
 
             chunk_text = content[start:end].strip()
 
-            if len(chunk_text) > 0:  # Only add non-empty chunks
+            if len(chunk_text) > 0:
                 chunks.append({
                     "text": chunk_text,
                     "index": len(chunks)
                 })
 
-            # Move start position, with overlap if possible
             start = end - overlap if end - overlap > start else end
-
-            # If we're not making progress, move forward by chunk_size to avoid infinite loop
             if start == end - overlap and overlap > 0:
                 start = end
 
@@ -137,22 +134,18 @@ class EmbeddingService:
 
     def generate_embeddings(self, text: str) -> List[float]:
         """
-        Generate embeddings for text using OpenAI's embedding API
+        Generate embeddings for text using Gemini API
         """
-        # Initialize OpenAI client with API key from settings
-        client = openai.OpenAI(api_key=settings.openai_api_key)
+        if not settings.gemini_api_key:
+            return [0.0] * 768
 
         try:
-            # Call OpenAI embeddings API
-            response = client.embeddings.create(
-                input=text,
-                model="text-embedding-ada-002"
+            result = genai.embed_content(
+                model=settings.embedding_model_name,
+                content=text,
+                task_type="retrieval_document"
             )
-
-            # Extract the embedding from the response
-            embedding = response.data[0].embedding
-            return embedding
+            return result['embedding']
         except Exception as e:
             print(f"Error generating embeddings: {str(e)}")
-            # Return a default embedding in case of error
-            return [0.0] * 1536
+            return [0.0] * 768
