@@ -23,6 +23,8 @@ app.add_middleware(
 app.include_router(documents.router)
 app.include_router(embeddings.router)
 app.include_router(queries.router)
+from .v1 import agents
+app.include_router(agents.router)
 
 @app.get("/")
 def read_root():

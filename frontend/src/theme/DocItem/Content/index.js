@@ -3,18 +3,26 @@ import Content from '@theme-original/DocItem/Content';
 import { useAuth } from '../../../components/Auth/AuthContext';
 import styles from './styles.module.css';
 
-// Mock API call to backend agent
+// Real API call to backend agent
 const callAgentSkill = async (skill, text, context = {}) => {
-    // In a real app, this would POST to http://localhost:8000/api/v1/agent/skill
-    console.log(`Calling skill: ${skill}`, context);
-
-    if (skill === 'translate_urdu') {
-        return '🤖 [AI Translation]: ' + text.substring(0, 100) + '... (Urdu Translation Mock)';
+    try {
+        const response = await fetch('http://localhost:8000/api/v1/agent/skill', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                skill: skill,
+                text: text,
+                context: context
+            })
+        });
+        const data = await response.json();
+        return data.result;
+    } catch (error) {
+        console.error("Agent Error:", error);
+        return "⚠️ Error: Could not connect to AI Agent.";
     }
-    if (skill === 'personalize') {
-        return '🤖 [AI Personalization]: Based on your background in ' + context.software_bg + ', think of this concept like...';
-    }
-    return text;
 };
 
 export default function DocItemContentWrapper(props) {
