@@ -59,8 +59,8 @@ const config = {
         title: 'Physical AI & Humanoid Robotics',
         logo: {
           alt: 'Physical AI & Humanoid Robotics Logo',
-          src: 'img/logo.svg',
-          srcDark: 'img/logo.svg', // If you have a dark mode logo
+          src: 'img/logo.png',
+          srcDark: 'img/logo.png', // If you have a dark mode logo
           width: 32,
           height: 32,
         },
@@ -95,6 +95,12 @@ const config = {
             position: 'right',
             className: 'navbar-github-link',
             'aria-label': 'GitHub repository',
+          },
+          {
+            to: '/signup',
+            label: 'Join Class 🚀',
+            position: 'right',
+            className: 'button button--primary button--sm margin-left--sm',
           },
         ],
       },

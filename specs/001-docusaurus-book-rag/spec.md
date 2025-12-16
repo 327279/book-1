@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-docusaurus-book-rag`
 **Created**: 2025-12-10
-**Status**: Draft
+**Status**: Completed
 **Input**: User description: "/sp.specify Physical AI & Humanoid Robotics: Docusaurus Book & RAG Chatbot
 
 Target audience: CS students and developers transitioning from digital AI to embodied intelligence (robotics)

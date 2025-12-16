@@ -15,6 +15,19 @@ Gazebo is a physics-based simulation engine that provides realistic interactions
 
 ### Basic Gazebo Simulation Setup
 
+In Gazebo, the world is defined using SDF (Simulation Description Format). It specifies the lighting, ground plane, and physics properties.
+
+```mermaid
+graph TD
+    World --> Light[Sun]
+    World --> Ground[Ground Plane]
+    World --> Physics[Gravity: -9.8 m/s²]
+    World --> Models[Robots & Objects]
+```
+
+<details>
+<summary>Show SDF XML Code</summary>
+
 ```xml
 <sdf version="1.6">
   <world name="default">
@@ -59,6 +72,7 @@ Gazebo is a physics-based simulation engine that provides realistic interactions
   </world>
 </sdf>
 ```
+</details>
 
 ### Physics Parameters
 

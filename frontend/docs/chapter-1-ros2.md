@@ -7,6 +7,9 @@ sidebar_position: 1
 
 ## Introduction to ROS 2
 
+> [!IMPORTANT]
+> **Prerequisites**: Before starting this chapter, make sure you have completed [Chapter 0.5: Setting Up Your Lab](./chapter-0-5-setup.md). You will need a working terminal and Python installation.
+
 Robot Operating System 2 (ROS 2) provides the communication framework for robotic systems. Unlike the original ROS, ROS 2 is designed for production environments with improved security, real-time capabilities, and multi-robot systems.
 
 ROS 2 uses the Data Distribution Service (DDS) for communication between nodes. This provides a middleware that enables different parts of a robotic system to communicate reliably, even when written in different programming languages or running on different machines.
@@ -16,6 +19,16 @@ ROS 2 uses the Data Distribution Service (DDS) for communication between nodes. 
 ### Nodes
 
 Nodes are the fundamental building blocks of ROS 2. A node is an executable that uses ROS 2 to communicate with other nodes. Each node should perform a specific function and communicate with other nodes to achieve complex robotic behaviors.
+
+```mermaid
+graph TD
+    A[Camera Node] -->|Image Topic| B[Vision Node]
+    B -->|Obstacle Data| C[Navigation Node]
+    C -->|Velocity Cmd| D[Motor Controller]
+```
+
+<details>
+<summary>Show Python Implementation</summary>
 
 ```python
 import rclpy
@@ -37,6 +50,7 @@ class MinimalPublisher(Node):
         self.get_logger().info('Publishing: "%s"' % msg.data)
         self.i += 1
 ```
+</details>
 
 ### Topics
 

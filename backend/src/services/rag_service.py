@@ -55,22 +55,46 @@ class RAGService:
 
     def _generate_response(self, query_text: str, selected_text: Optional[str], search_results: List[Dict[str, Any]]) -> str:
         """
-        Generate a response based on the query and retrieved results
-        This is a simplified implementation - in a real system, this would call an LLM
+        Generate a response based on the query and retrieved results using OpenAI
         """
+        from ..agents.skills import AgentSkills
+        agent = AgentSkills()
+        
         if not search_results:
-            return f"I couldn't find any relevant content to answer your question: '{query_text}'. Please check the book content for more information."
+            return agent.client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful AI assistant for a robotics textbook. The user asked a question but I couldn't find relevant content in the book. Answer politely based on your general knowledge, but mention that it's outside the book's scope."},
+                    {"role": "user", "content": query_text}
+                ]
+            ).choices[0].message.content
 
         # Combine the retrieved results to form a context
         context = "\n\n".join([result["chunk_text"] for result in search_results[:3]])  # Use top 3 results
 
-        # Create a response based on the context
-        response = f"Based on the book content:\n\n{context}\n\nFor your question '{query_text}', this section provides relevant information."
-
+        system_prompt = f"""
+        You are an expert AI tutor for a Physical AI & Robotics textbook.
+        Use the following retrieved context from the book to answer the user's question.
+        
+        Context:
+        {context}
+        
+        If selected text is provided, focus the answer on that specific section.
+        """
+        
+        user_prompt = f"Question: {query_text}"
         if selected_text:
-            response += f"\n\nYou specifically selected the text: '{selected_text}', which relates to the concepts mentioned above."
+            user_prompt += f"\n\nSelected Text: {selected_text}"
 
-        return response
+        response = agent.client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ]
+        )
+
+        return response.choices[0].message.content
 
     def index_document(self, db: Session, document: Any) -> bool:
         """

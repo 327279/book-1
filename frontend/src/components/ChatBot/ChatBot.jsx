@@ -43,7 +43,7 @@ const ChatBot = () => {
 
     try {
       // Prepare request with selected text context
-      const response = await fetch('/api/v1/queries/', {
+      const response = await fetch('http://localhost:8000/api/v1/queries/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

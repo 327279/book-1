@@ -120,7 +120,7 @@ After adding new content, you need to index it:
 ```bash
 cd backend
 source venv/bin/activate
-python -m src.services.document_service index_new_documents
+python src/scripts/ingest_docs.py
 ```
 
 ## Testing the RAG Functionality

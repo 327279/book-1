@@ -83,7 +83,10 @@ ros2 launch isaac_ros_stereo_image_rectification stereo_image_rectification.laun
 ```
 
 #### Isaac ROS ZED Camera Integration
-For depth sensing and VSLAM:
+For depth sensing and VSLAM, we connect the camera inputs to Isaac ROS nodes.
+
+<details>
+<summary>Show Isaac ROS Visualizer Code</summary>
 
 ```python
 import rclpy
@@ -117,6 +120,7 @@ class IsaacROSVisualizer(Node):
             10
         )
 ```
+</details>
 
 ### Hardware Acceleration Benefits
 

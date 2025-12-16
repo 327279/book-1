@@ -1,0 +1,23 @@
+/* styles.module.css for DocItem Content */
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.personalizationBox {
+    border: 1px solid var(--ifm-color-success);
+    background-color: var(--ifm-color-success-contrast-background);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.translationBox {
+    border: 1px solid var(--ifm-color-info);
+    background-color: var(--ifm-color-info-contrast-background);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}

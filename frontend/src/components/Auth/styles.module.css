@@ -1,0 +1,20 @@
+/* styles.module.css for Auth components */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: var(--ifm-global-radius);
+}
+
+.label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+}
