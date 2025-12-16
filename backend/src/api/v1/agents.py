@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import Optional, Dict
 from ...agents.skills import AgentSkills
 
-router = APIRouter(prefix="/agent", tags=["agent"])
+router = APIRouter(prefix="/api/v1/agent", tags=["agent"])
 agent_skills = AgentSkills()
 
 class SkillRequest(BaseModel):

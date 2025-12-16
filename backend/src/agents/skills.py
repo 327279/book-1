@@ -1,21 +1,28 @@
 from typing import List, Dict, Any
-import google.generativeai as genai
+from openai import OpenAI
 from ..config.settings import settings
 
 class AgentSkills:
     def __init__(self):
-        if settings.gemini_api_key:
-            genai.configure(api_key=settings.gemini_api_key)
-            self.model = genai.GenerativeModel('gemini-pro')
-        else:
-            self.model = None
-
+        self.client = OpenAI(api_key=settings.openai_api_key)
+        self.model_name = settings.model_name
+        
     def _generate(self, prompt: str) -> str:
-        if not self.model:
-            return "Error: Gemini API Key not configured."
+        if not settings.openai_api_key:
+            return "Error: OpenAI API Key not configured."
+        
         try:
-            response = self.model.generate_content(prompt)
-            return response.text
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[
+                    {"role": "system", "content": "You are a helpful AI assistant for a Physical AI & Humanoid Robotics textbook."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=1000,
+                temperature=0.7
+            )
+            return response.choices[0].message.content
+                
         except Exception as e:
             return f"Error generating content: {str(e)}"
 

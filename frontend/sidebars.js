@@ -3,7 +3,16 @@ const sidebars = {
   tutorialSidebar: [
     {
       type: 'category',
-      label: 'Introduction',
+      label: 'Getting Started',
+      items: [
+        'chapter-0-intro',
+        'chapter-0-5-setup',
+      ],
+      collapsed: false,
+    },
+    {
+      type: 'category',
+      label: 'Module 1: The Robotic Nervous System (ROS 2)',
       items: [
         'chapter-1-ros2',
       ],
@@ -11,7 +20,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Simulation and Digital Twins',
+      label: 'Module 2: The Digital Twin (Simulation)',
       items: [
         'chapter-2-simulation',
       ],
@@ -19,25 +28,34 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'AI-Robot Integration',
+      label: 'Module 3: The AI-Robot Brain (NVIDIA Isaac)',
       items: [
         'chapter-3-isaac',
+      ],
+      collapsed: false,
+    },
+    {
+      type: 'category',
+      label: 'Module 4: Vision-Language-Action (VLA)',
+      items: [
         'chapter-4-vla',
       ],
       collapsed: false,
     },
     {
       type: 'category',
-      label: 'Capstone Projects',
+      label: 'Humanoid Development',
       items: [
+        'chapter-5-humanoids',
         'chapter-5-capstone',
       ],
       collapsed: false,
     },
     {
       type: 'category',
-      label: 'AI Integration and Tools',
+      label: 'Conversational Robotics & RAG',
       items: [
+        'chapter-6-conversational',
         'chapter-6-rag-implementation',
       ],
       collapsed: false,
@@ -60,6 +78,7 @@ const sidebars = {
         'chapter-11-hardware-requirements-lab-setup',
         'chapter-12-cloud-onpremise-deployment',
         'chapter-13-economy-jetson-student-kit',
+        'chapter-14-future',
       ],
       collapsed: false,
     },

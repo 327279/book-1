@@ -10,10 +10,9 @@ class Settings(BaseSettings):
     qdrant_api_key: Optional[str] = None
 
     # OpenAI Configuration
-    # Gemini Configuration
-    gemini_api_key: Optional[str] = None
-    model_name: str = "gemini-pro"
-    embedding_model_name: str = "models/embedding-001"
+    openai_api_key: Optional[str] = None
+    model_name: str = "gpt-4o-mini"
+    embedding_model_name: str = "text-embedding-3-small"
 
     # Application Configuration
     debug: bool = True

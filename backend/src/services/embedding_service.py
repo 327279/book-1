@@ -3,14 +3,13 @@ from qdrant_client import models
 from ..config.database import qdrant_client
 from ..models.document import Document
 import uuid
-import google.generativeai as genai
+from openai import OpenAI
 from ..config.settings import settings
 
 class EmbeddingService:
     def __init__(self):
-        self.collection_name = "book_content_gemini"  # Changed name to avoid conflict with old collection
-        if settings.gemini_api_key:
-            genai.configure(api_key=settings.gemini_api_key)
+        self.collection_name = "book_content_openai"
+        self.client = OpenAI(api_key=settings.openai_api_key)
         self._create_collection_if_not_exists()
 
     def _create_collection_if_not_exists(self):
@@ -21,10 +20,10 @@ class EmbeddingService:
             qdrant_client.get_collection(self.collection_name)
         except:
             # Collection doesn't exist, create it
-            # Gemini embeddings are 768 dimensions
+            # OpenAI text-embedding-3-small produces 1536 dimensions
             qdrant_client.create_collection(
                 collection_name=self.collection_name,
-                vectors_config=models.VectorParams(size=768, distance=models.Distance.COSINE),
+                vectors_config=models.VectorParams(size=1536, distance=models.Distance.COSINE),
             )
 
     def create_embedding(self, document_id: str, chunk_text: str, chunk_index: int, vector: List[float], metadata: dict = None) -> str:
@@ -134,18 +133,17 @@ class EmbeddingService:
 
     def generate_embeddings(self, text: str) -> List[float]:
         """
-        Generate embeddings for text using Gemini API
+        Generate embeddings for text using OpenAI API
         """
-        if not settings.gemini_api_key:
-            return [0.0] * 768
+        if not settings.openai_api_key:
+            return [0.0] * 1536
 
         try:
-            result = genai.embed_content(
+            response = self.client.embeddings.create(
                 model=settings.embedding_model_name,
-                content=text,
-                task_type="retrieval_document"
+                input=text
             )
-            return result['embedding']
+            return response.data[0].embedding
         except Exception as e:
             print(f"Error generating embeddings: {str(e)}")
-            return [0.0] * 768
+            return [0.0] * 1536

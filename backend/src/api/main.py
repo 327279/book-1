@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .v1 import documents, embeddings, queries
+from .v1 import documents, embeddings, queries, agents, auth
 from ..config.settings import settings
 
 # Create FastAPI app instance
@@ -13,7 +13,7 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify the exact frontend URL
+    allow_origins=["http://localhost:3000", "*"],  # In production, specify the exact frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -23,8 +23,8 @@ app.add_middleware(
 app.include_router(documents.router)
 app.include_router(embeddings.router)
 app.include_router(queries.router)
-from .v1 import agents
 app.include_router(agents.router)
+app.include_router(auth.router)
 
 @app.get("/")
 def read_root():

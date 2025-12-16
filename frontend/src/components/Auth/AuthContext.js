@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { authClient, useSession } from './authClient';
 
 const AuthContext = createContext();
 
@@ -7,35 +8,102 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check local storage for existing session
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-        setLoading(false);
+        // Check for existing session using Better-Auth
+        const checkSession = async () => {
+            try {
+                const session = await authClient.getSession();
+                if (session?.user) {
+                    // Get user profile from localStorage (stored during signup)
+                    const storedProfile = localStorage.getItem('userProfile');
+                    const profile = storedProfile ? JSON.parse(storedProfile) : {
+                        software_bg: 'General',
+                        hardware_bg: 'General'
+                    };
+                    setUser({
+                        ...session.user,
+                        profile
+                    });
+                }
+            } catch (error) {
+                console.log('No active session');
+            } finally {
+                setLoading(false);
+            }
+        };
+        checkSession();
     }, []);
 
     const signup = async (email, password, profile) => {
-        // Mock Signup - In prod, call Better-Auth API
-        const newUser = { email, profile, id: Date.now().toString() };
-        setUser(newUser);
-        localStorage.setItem('user', JSON.stringify(newUser));
-        return newUser;
+        try {
+            const result = await authClient.signUp.email({
+                email,
+                password,
+                name: email.split('@')[0], // Use email prefix as name
+            });
+
+            if (result.user) {
+                // Store profile in localStorage for now (can be moved to DB with custom fields)
+                localStorage.setItem('userProfile', JSON.stringify(profile));
+
+                // Also store in backend for personalization
+                await fetch('http://localhost:8000/api/v1/users/profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: result.user.id,
+                        email: email,
+                        software_bg: profile.software_bg,
+                        hardware_bg: profile.hardware_bg
+                    })
+                });
+
+                setUser({
+                    ...result.user,
+                    profile
+                });
+                return result.user;
+            }
+        } catch (error) {
+            console.error('Signup error:', error);
+            throw error;
+        }
     };
 
     const login = async (email, password) => {
-        // Mock Login
-        const storedUser = JSON.parse(localStorage.getItem('user'));
-        if (storedUser && storedUser.email === email) {
-            setUser(storedUser);
-            return storedUser;
+        try {
+            const result = await authClient.signIn.email({
+                email,
+                password,
+            });
+
+            if (result.user) {
+                // Retrieve stored profile
+                const storedProfile = localStorage.getItem('userProfile');
+                const profile = storedProfile ? JSON.parse(storedProfile) : {
+                    software_bg: 'General',
+                    hardware_bg: 'General'
+                };
+
+                setUser({
+                    ...result.user,
+                    profile
+                });
+                return result.user;
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            throw error;
         }
-        throw new Error('Invalid credentials');
     };
 
-    const logout = () => {
-        setUser(null);
-        localStorage.removeItem('user');
+    const logout = async () => {
+        try {
+            await authClient.signOut();
+            setUser(null);
+            localStorage.removeItem('userProfile');
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
     };
 
     return (
