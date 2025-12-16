@@ -16,8 +16,8 @@ const config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'your-username', // Usually your GitHub org/user name.
-  projectName: 'book', // Usually your repo name.
+  organizationName: '327279', // Usually your GitHub org/user name.
+  projectName: 'book-1', // Usually your repo name.
 
   onBrokenLinks: 'warn',  // Change from 'throw' to 'warn' to allow build to continue
   onBrokenMarkdownLinks: 'warn',
@@ -78,7 +78,7 @@ const config = {
             items: [
               {
                 label: 'GitHub Repository',
-                href: 'https://github.com/your-username/book',
+                href: 'https://github.com/327279/book-1',
               },
               {
                 label: 'Research Papers',
@@ -91,7 +91,7 @@ const config = {
             ],
           },
           {
-            href: 'https://github.com/your-username/book',
+            href: 'https://github.com/327279/book-1',
             position: 'right',
             className: 'navbar-github-link',
             'aria-label': 'GitHub repository',
@@ -141,7 +141,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/your-username/book',
+                href: 'https://github.com/327279/book-1',
               },
               {
                 label: 'Research Papers',
