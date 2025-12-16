@@ -1,36 +1,48 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional
+from pydantic import BaseModel
 from ...config.database import get_db
 from ...services.rag_service import RAGService
 
 router = APIRouter(prefix="/api/v1/queries", tags=["queries"])
 
+class QueryRequest(BaseModel):
+    query: str
+    selected_text: Optional[str] = None
+    user_id: Optional[str] = None
+
 @router.post("/")
 def create_query(
-    query: str,
-    selected_text: Optional[str] = None,
-    session_id: Optional[str] = None,
+    request: QueryRequest,
     db: Session = Depends(get_db)
 ):
     """
     Submit a query to the RAG system
     """
-    if not query or not query.strip():
+    if not request.query or not request.query.strip():
         raise HTTPException(status_code=400, detail="Query text is required")
 
     rag_service = RAGService()
-    query_result = rag_service.process_query(db, query, selected_text, session_id)
+    # Map user_id to session_id for internal service
+    query_result = rag_service.process_query(db, request.query, request.selected_text, request.user_id)
+
+    # Safely parse source documents
+    try:
+        import json
+        source_docs = json.loads(query_result.source_documents_json)
+    except:
+        source_docs = []
 
     return {
         "response": query_result.response_text,
         "sources": [
             {
                 "document_id": doc_id,
-                "title": "Document Title",  # In a real implementation, we'd fetch the title from the DB
-                "chapter_number": 0  # In a real implementation, we'd fetch this from the DB
+                "title": f"Document {doc_id}", 
+                "chapter": 1 # Placeholder, strictly matching frontend expectation
             }
-            for doc_id in eval(query_result.source_documents_json)  # Note: In production, use json.loads instead of eval
+            for doc_id in source_docs
         ],
         "confidence": query_result.confidence_score,
         "query_id": query_result.id
