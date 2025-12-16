@@ -1,35 +1,55 @@
-# Project Constitution: Physical AI & Humanoid Robotics
+# [PROJECT_NAME] Constitution
+<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
 
-## 1. Vision & Goals
+## Core Principles
 
-### Core Vision
-To create the definitive interactive textbook for "Physical AI & Humanoid Robotics" that bridges the gap between digital AI (LLMs) and embodied intelligence (Robots).
+### [PRINCIPLE_1_NAME]
+<!-- Example: I. Library-First -->
+[PRINCIPLE_1_DESCRIPTION]
+<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
 
-### Learning Philosophy
-- **Embodied First**: Theory must lead to simulation or physical implementation.
-- **Interactive**: The book talks back via an embedded RAG agent.
-- **Spec-Driven**: All work is defined by rigorous specs before code is written.
+### [PRINCIPLE_2_NAME]
+<!-- Example: II. CLI Interface -->
+[PRINCIPLE_2_DESCRIPTION]
+<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
 
-## 2. Technical Standards
+### [PRINCIPLE_3_NAME]
+<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
+[PRINCIPLE_3_DESCRIPTION]
+<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
 
-### Architecture
-- **Frontend**: Docusaurus 3+ (React)
-- **Backend**: FastAPI (Python 3.11+)
-- **Data**: Neon (PostgreSQL) + Qdrant (Vectors)
-- **Sim**: ROS 2 Humble + NVIDIA Isaac Sim
+### [PRINCIPLE_4_NAME]
+<!-- Example: IV. Integration Testing -->
+[PRINCIPLE_4_DESCRIPTION]
+<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
 
-### Code Quality
-- **Typing**: Strict Python type hints.
-- **Testing**: Pytest for backend logic (min 80% coverage on core logic).
-- **Docs**: READMEs for every module; inline docstrings for complex logic.
+### [PRINCIPLE_5_NAME]
+<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
+[PRINCIPLE_5_DESCRIPTION]
+<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
 
-## 3. Spec-Driven Workflow (SpecifyKit Plus)
-1.  **Phase 0 (Research)**: Analyze syllabus and requirements.
-2.  **Phase 1 (Spec)**: Create `spec.md` defining features and success criteria.
-3.  **Phase 2 (Plan)**: Create `plan.md` defining architecture.
-4.  **Phase 3 (Tasks)**: Create `tasks.md` with granular steps.
-5.  **Phase 4 (History)**: Log all prompts in `history/prompts/`.
+### [PRINCIPLE_6_NAME]
 
-## 4. Ethical AI
-- **Safety**: All robot code must prioritize human safety.
-- **Transparency**: AI-generated content in the book must be verified by human experts.
+
+[PRINCIPLE__DESCRIPTION]
+
+## [SECTION_2_NAME]
+<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+
+[SECTION_2_CONTENT]
+<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+
+## [SECTION_3_NAME]
+<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+
+[SECTION_3_CONTENT]
+<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+
+## Governance
+<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+
+[GOVERNANCE_RULES]
+<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+
+**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
+<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->

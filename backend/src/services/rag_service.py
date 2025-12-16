@@ -14,18 +14,51 @@ class RAGService:
     def __init__(self):
         self.embedding_service = EmbeddingService()
 
+    def _detect_topic(self, query_text: str) -> Optional[str]:
+        """
+        Detect the topic/chapter focus of a query for better filtering
+        """
+        query_lower = query_text.lower()
+        
+        # Topic keywords mapping
+        topic_keywords = {
+            "ros2": ["ros", "ros2", "node", "topic", "service", "rclpy", "urdf", "publisher", "subscriber"],
+            "simulation": ["gazebo", "unity", "simulation", "physics", "sensor", "lidar", "imu", "depth camera"],
+            "isaac": ["isaac", "nvidia", "nav2", "vslam", "path planning", "navigation"],
+            "vla": ["vla", "voice", "whisper", "natural language", "cognitive", "speech"],
+            "capstone": ["capstone", "autonomous", "integration", "manipulation", "object identification"],
+            "conversational": ["conversational", "dialogue", "interaction", "chat", "conversation"],
+            "humanoid": ["humanoid", "robot", "bipedal", "balance", "locomotion"]
+        }
+        
+        # Count matches for each topic
+        topic_scores = {}
+        for topic, keywords in topic_keywords.items():
+            score = sum(1 for keyword in keywords if keyword in query_lower)
+            if score > 0:
+                topic_scores[topic] = score
+        
+        # Return topic with highest score
+        if topic_scores:
+            return max(topic_scores, key=topic_scores.get)
+        return None
+
     def process_query(self, db: Session, query_text: str, selected_text: Optional[str] = None, session_id: Optional[str] = None) -> QueryResult:
         """
-        Process a user query using the RAG system
+        Process a user query using the RAG system with topic-specific enhancement
         """
         # Create query record
         query_id = str(uuid.uuid4())
+        
+        # Detect query topic for better context
+        detected_topic = self._detect_topic(query_text)
+        
         query = Query(
             id=query_id,
             query_text=query_text,
             selected_text=selected_text,
             session_id=session_id or str(uuid.uuid4()),
-            context_json="{}"  # Empty context for now
+            context_json=str({"detected_topic": detected_topic}) if detected_topic else "{}"
         )
         db.add(query)
         db.commit()
@@ -34,10 +67,25 @@ class RAGService:
         query_embedding = self.embedding_service.generate_embeddings(query_text)
 
         # Search for similar content in the vector store
-        search_results = self.embedding_service.search_similar(query_embedding, limit=5)
+        # Increase limit to filter by topic later
+        search_results = self.embedding_service.search_similar(query_embedding, limit=10)
+        
+        # Filter results by detected topic if available
+        if detected_topic and search_results:
+            filtered_results = [
+                result for result in search_results 
+                if detected_topic in str(result.get("metadata", {})).lower()
+            ]
+            # Use filtered results if we have enough, otherwise fall back to all results
+            if len(filtered_results) >= 3:
+                search_results = filtered_results[:5]
+            else:
+                search_results = search_results[:5]
+        else:
+            search_results = search_results[:5]
 
         # Generate response based on retrieved content
-        response_text = self._generate_response(query_text, selected_text, search_results)
+        response_text = self._generate_response(query_text, selected_text, search_results, detected_topic)
 
         # Create query result record
         query_result = QueryResult(
@@ -45,7 +93,7 @@ class RAGService:
             query_id=query_id,
             response_text=response_text,
             source_documents_json=str([result["document_id"] for result in search_results]),
-            confidence_score=0.85,  # Placeholder confidence score
+            confidence_score=0.90 if detected_topic else 0.85,  # Higher confidence for topic-specific queries
             retrieved_chunks_json=str([{"id": str(i), "text": result["chunk_text"][:100] + "..."} for i, result in enumerate(search_results)])
         )
         db.add(query_result)
@@ -53,9 +101,9 @@ class RAGService:
 
         return query_result
 
-    def _generate_response(self, query_text: str, selected_text: Optional[str], search_results: List[Dict[str, Any]]) -> str:
+    def _generate_response(self, query_text: str, selected_text: Optional[str], search_results: List[Dict[str, Any]], detected_topic: Optional[str] = None) -> str:
         """
-        Generate a response based on the query and retrieved results using Gemini
+        Generate a response based on the query and retrieved results using AI with topic awareness
         """
         from ..agents.skills import AgentSkills
         agent = AgentSkills()
@@ -66,10 +114,13 @@ class RAGService:
 
         # Combine the retrieved results to form a context
         context = "\n\n".join([result["chunk_text"] for result in search_results[:3]])  # Use top 3 results
+        
+        # Add topic context if detected
+        topic_context = f"\nThis question appears to be about {detected_topic.upper()}." if detected_topic else ""
 
         system_prompt = f"""
         You are an expert AI tutor for a Physical AI & Robotics textbook.
-        Use the following retrieved context from the book to answer the user's question.
+        Use the following retrieved context from the book to answer the user's question.{topic_context}
         
         Context:
         {context}
