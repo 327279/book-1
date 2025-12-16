@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authClient, useSession } from './authClient';
+import { API_ENDPOINTS, DEMO_MODE, safeFetch } from '../../config/api';
 
 const AuthContext = createContext();
 
@@ -45,17 +46,23 @@ export const AuthProvider = ({ children }) => {
                 // Store profile in localStorage for now (can be moved to DB with custom fields)
                 localStorage.setItem('userProfile', JSON.stringify(profile));
 
-                // Also store in backend for personalization
-                await fetch('http://localhost:8000/api/v1/users/profile', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: result.user.id,
-                        email: email,
-                        software_bg: profile.software_bg,
-                        hardware_bg: profile.hardware_bg
-                    })
-                });
+                // Only sync with backend if not in demo mode
+                if (!DEMO_MODE) {
+                    try {
+                        await safeFetch(API_ENDPOINTS.userProfile, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                user_id: result.user.id,
+                                email: email,
+                                software_bg: profile.software_bg,
+                                hardware_bg: profile.hardware_bg
+                            })
+                        });
+                    } catch (e) {
+                        console.log('Backend profile sync skipped');
+                    }
+                }
 
                 setUser({
                     ...result.user,

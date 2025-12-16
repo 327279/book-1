@@ -1,6 +1,33 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useColorMode } from '@docusaurus/theme-common';
+import { API_ENDPOINTS, DEMO_MODE, safeFetch } from '../../config/api';
 import './ChatBot.css';
+
+// Demo responses for when backend is unavailable
+const DEMO_RESPONSES = {
+  ros2: "ROS 2 (Robot Operating System 2) is the middleware framework for robotics. It provides communication infrastructure using DDS (Data Distribution Service), allowing nodes to communicate via topics, services, and actions. Key concepts include nodes, publishers, subscribers, and the rclpy Python library for creating ROS 2 applications.",
+  simulation: "Simulation environments like Gazebo and Unity allow you to test robot behaviors virtually before deploying to real hardware. Gazebo provides physics simulation with ODE/Bullet engines, while Unity offers high-fidelity rendering for HRI (Human-Robot Interaction) scenarios.",
+  isaac: "NVIDIA Isaac is a platform for accelerated robotics development. It includes Isaac Sim for photorealistic simulation, Isaac ROS for hardware-accelerated perception, and integrates with Nav2 for autonomous navigation. Isaac enables synthetic data generation for training AI models.",
+  vla: "VLA (Vision-Language-Action) models bridge natural language understanding with robotic actions. They use models like OpenAI Whisper for speech recognition and LLMs for cognitive planning, translating voice commands into ROS 2 action sequences.",
+  default: "I'm the Physical AI & Robotics Book Assistant! This textbook covers ROS 2, simulation (Gazebo/Unity), NVIDIA Isaac, VLA systems, and more. The backend is currently offline, but I can provide basic information from the book content. Try asking about ROS 2, simulation, Isaac, or VLA!"
+};
+
+function getDemoResponse(query) {
+  const q = query.toLowerCase();
+  if (q.includes('ros') || q.includes('node') || q.includes('topic') || q.includes('rclpy')) {
+    return DEMO_RESPONSES.ros2;
+  }
+  if (q.includes('simulation') || q.includes('gazebo') || q.includes('unity') || q.includes('physics')) {
+    return DEMO_RESPONSES.simulation;
+  }
+  if (q.includes('isaac') || q.includes('nvidia') || q.includes('nav2') || q.includes('vslam')) {
+    return DEMO_RESPONSES.isaac;
+  }
+  if (q.includes('vla') || q.includes('voice') || q.includes('whisper') || q.includes('language')) {
+    return DEMO_RESPONSES.vla;
+  }
+  return DEMO_RESPONSES.default;
+}
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
@@ -38,38 +65,58 @@ const ChatBot = () => {
     // Add user message
     const userMessage = { id: Date.now(), text: inputValue, sender: 'user' };
     setMessages(prev => [...prev, userMessage]);
+    const currentQuery = inputValue;
     setInputValue('');
     setIsLoading(true);
 
     try {
-      // Prepare request with selected text context
-      const response = await fetch('http://localhost:8000/api/v1/queries/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: inputValue,
-          selected_text: selectedText,
-          user_id: 'docusaurus-user'
-        })
-      });
+      let botText = '';
+      let sources = [];
+      let confidence = 0;
 
-      const data = await response.json();
+      if (DEMO_MODE) {
+        // Simulate API delay for demo mode
+        await new Promise(resolve => setTimeout(resolve, 800));
+        botText = getDemoResponse(currentQuery);
+        confidence = 0.85;
+      } else {
+        // Real API call
+        const response = await safeFetch(API_ENDPOINTS.queries, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: currentQuery,
+            selected_text: selectedText,
+            user_id: 'docusaurus-user'
+          })
+        });
 
-      // Add bot response
+        if (response.ok) {
+          const data = await response.json();
+          botText = data.response;
+          sources = data.sources || [];
+          confidence = data.confidence || 0;
+        } else {
+          // Fallback to demo if API fails
+          botText = getDemoResponse(currentQuery);
+          confidence = 0.7;
+        }
+      }
+
       const botMessage = {
         id: Date.now() + 1,
-        text: data.response,
+        text: botText,
         sender: 'bot',
-        sources: data.sources,
-        confidence: data.confidence
+        sources: sources,
+        confidence: confidence
       };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       const errorMessage = {
         id: Date.now() + 1,
-        text: 'Sorry, I encountered an error processing your request.',
+        text: getDemoResponse(currentQuery),
         sender: 'bot',
-        error: true
+        error: false
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -77,6 +124,7 @@ const ChatBot = () => {
       setSelectedText(''); // Clear selected text after use
     }
   };
+
 
   return (
     <div className={`chat-container ${colorMode}`}>

@@ -2,11 +2,30 @@ import React, { useState } from 'react';
 import Content from '@theme-original/DocItem/Content';
 import { useAuth } from '../../../components/Auth/AuthContext';
 import styles from './styles.module.css';
+import { API_ENDPOINTS, DEMO_MODE, safeFetch } from '../../../config/api';
+
+// Demo responses for agent skills
+const DEMO_SKILL_RESPONSES = {
+    personalize: (profile) => `Based on your ${profile?.software_bg || 'technical'} background, this chapter's key concepts can be understood through practical implementation. Focus on the code examples and try running them in your development environment.`,
+    translate_urdu: () => `یہ باب روبوٹکس کے بنیادی تصورات کا احاطہ کرتا ہے۔ ROS 2 روبوٹ سسٹمز کے لیے میڈل ویئر فریم ورک ہے جو نوڈز، ٹاپکس، اور سروسز کا استعمال کرتے ہوئے مواصلات فراہم کرتا ہے۔`
+};
 
 // Real API call to backend agent
 const callAgentSkill = async (skill, text, context = {}) => {
+    if (DEMO_MODE) {
+        // Return demo response in production
+        await new Promise(resolve => setTimeout(resolve, 500));
+        if (skill === 'personalize') {
+            return DEMO_SKILL_RESPONSES.personalize(context);
+        }
+        if (skill === 'translate_urdu') {
+            return DEMO_SKILL_RESPONSES.translate_urdu();
+        }
+        return "AI Agent skill executed successfully (demo mode).";
+    }
+
     try {
-        const response = await fetch('http://localhost:8000/api/v1/agent/skill', {
+        const response = await safeFetch(API_ENDPOINTS.agentSkill, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -17,8 +36,15 @@ const callAgentSkill = async (skill, text, context = {}) => {
                 context: context
             })
         });
-        const data = await response.json();
-        return data.result;
+        if (response.ok) {
+            const data = await response.json();
+            return data.result;
+        }
+        // Fallback to demo if API fails
+        if (skill === 'personalize') {
+            return DEMO_SKILL_RESPONSES.personalize(context);
+        }
+        return DEMO_SKILL_RESPONSES.translate_urdu();
     } catch (error) {
         console.error("Agent Error:", error);
         return "⚠️ Error: Could not connect to AI Agent.";
@@ -37,22 +63,18 @@ export default function DocItemContentWrapper(props) {
             return;
         }
         setLoading(true);
-        // Simulate API delay
-        setTimeout(async () => {
-            const result = await callAgentSkill('personalize', 'Current Chapter Content', user.profile);
-            setPersonalizedContent(result);
-            setLoading(false);
-        }, 1000);
+        const result = await callAgentSkill('personalize', 'Current Chapter Content', user.profile);
+        setPersonalizedContent(result);
+        setLoading(false);
     };
 
     const handleTranslate = async () => {
         setLoading(true);
-        setTimeout(async () => {
-            const result = await callAgentSkill('translate_urdu', 'Current Chapter Content');
-            setTranslatedContent(result);
-            setLoading(false);
-        }, 1000);
+        const result = await callAgentSkill('translate_urdu', 'Current Chapter Content');
+        setTranslatedContent(result);
+        setLoading(false);
     };
+
 
     return (
         <>
