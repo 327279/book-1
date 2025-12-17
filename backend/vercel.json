@@ -2,20 +2,17 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/api/main.py",
-      "use": "@vercel/python"
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/api/main.py"
+      "dest": "api/index.py"
     }
-  ],
-  "env": {
-    "OPENAI_API_KEY": "@openai_api_key",
-    "DATABASE_URL": "@database_url",
-    "QDRANT_URL": "@qdrant_url",
-    "QDRANT_API_KEY": "@qdrant_api_key"
-  }
+  ]
 }
