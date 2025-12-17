@@ -1,9 +1,9 @@
 import { createAuthClient } from "better-auth/react";
-import { API_BASE_URL, DEMO_MODE } from '../../config/api';
+import { API_BASE_URL } from '../../config/api';
 
-// Create the Better-Auth client
+// Create the Better-Auth client - always use the configured API base URL
 export const authClient = createAuthClient({
-    baseURL: DEMO_MODE ? "/api/auth" : `${API_BASE_URL}/api/auth`, // Backend auth endpoint
+    baseURL: `${API_BASE_URL}/api/auth`, // Backend auth endpoint
 });
 
 // Export auth hooks and utilities

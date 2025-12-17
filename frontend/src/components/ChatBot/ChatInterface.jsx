@@ -1,5 +1,6 @@
 import React from 'react';
 import ChatBot from './ChatBot';
+import './ChatBot.css';
 
 const ChatInterface = ({ position = 'bottom-right' }) => {
   const [isOpen, setIsOpen] = React.useState(false);
