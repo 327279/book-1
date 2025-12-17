@@ -3,14 +3,19 @@
  * Uses environment variable for backend URL, falls back to localhost for development
  */
 
-// Backend API base URL
+// Backend API base URL - Set VITE_API_URL in Vercel environment variables
 export const API_BASE_URL = typeof window !== 'undefined'
-    ? (window.__ENV__?.API_URL || 'http://localhost:8000')
+    ? (window.__ENV__?.API_URL || process.env.VITE_API_URL || 'http://localhost:8000')
     : 'http://localhost:8000';
 
 // Check if we're in production (Vercel deployment)
 export const IS_PRODUCTION = typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost';
+
+// Demo mode - set to false when backend is deployed
+// Set VITE_DEMO_MODE=false in Vercel to enable real API calls
+export const DEMO_MODE = process.env.VITE_DEMO_MODE === 'true' ||
+    (IS_PRODUCTION && !process.env.VITE_API_URL);
 
 // API endpoints
 export const API_ENDPOINTS = {
@@ -19,9 +24,6 @@ export const API_ENDPOINTS = {
     userProfile: `${API_BASE_URL}/api/v1/users/profile`,
     auth: `${API_BASE_URL}/api/auth`,
 };
-
-// Demo/Mock mode - enabled when backend is unavailable
-export const DEMO_MODE = IS_PRODUCTION;
 
 /**
  * Safe fetch wrapper that handles backend unavailability gracefully
