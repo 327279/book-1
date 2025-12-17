@@ -1,122 +1,107 @@
-import React from 'react';
-import './ChatBot.css';
+import React, { useEffect } from 'react';
 
-class ChatInterface extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOpen: false,
-      messages: [],
-      inputValue: '',
-      isLoading: false
-    };
-  }
+// Vanilla JS chatbot that gets injected into the page
+const ChatInterface = () => {
+  useEffect(() => {
+    // Only inject once
+    if (document.getElementById('custom-chatbot')) return;
 
-  toggleChat = () => {
-    this.setState(prevState => ({ isOpen: !prevState.isOpen }));
-  }
-
-  handleInputChange = (e) => {
-    this.setState({ inputValue: e.target.value });
-  }
-
-  getDemoResponse = (query) => {
-    const q = query.toLowerCase();
-    if (q.includes('ros')) return "ROS 2 is the robotics middleware framework. It provides communication infrastructure for building robot applications.";
-    if (q.includes('simulation') || q.includes('gazebo')) return "Simulation allows testing robots virtually before deployment. Gazebo is a popular physics-based simulator.";
-    if (q.includes('isaac') || q.includes('nvidia')) return "NVIDIA Isaac is a platform for accelerated robotics development with photorealistic simulation.";
-    if (q.includes('vla')) return "VLA (Vision-Language-Action) models bridge natural language understanding with robotic actions.";
-    return "I'm the Physical AI & Robotics Assistant! Ask me about ROS 2, simulation, NVIDIA Isaac, VLA systems, or any robotics topic from the book.";
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    const { inputValue, isLoading, messages } = this.state;
-
-    if (!inputValue.trim() || isLoading) return;
-
-    const userMessage = { id: Date.now(), text: inputValue, sender: 'user' };
-    this.setState({
-      messages: [...messages, userMessage],
-      inputValue: '',
-      isLoading: true
-    });
-
-    setTimeout(() => {
-      const botMessage = {
-        id: Date.now() + 1,
-        text: this.getDemoResponse(inputValue),
-        sender: 'bot'
-      };
-      this.setState(prevState => ({
-        messages: [...prevState.messages, botMessage],
-        isLoading: false
-      }));
-    }, 800);
-  }
-
-  render() {
-    const { isOpen, messages, inputValue, isLoading } = this.state;
-
-    return (
-      <div>
-        <button
-          className="chat-fab"
-          onClick={this.toggleChat}
-          aria-label={isOpen ? "Close chat" : "Open chat"}
-        >
-          {isOpen ? '✕' : '💬'}
+    const chatHTML = `
+      <div id="custom-chatbot">
+        <button id="chat-fab-btn" class="chat-fab" aria-label="Open chat">
+          💬
         </button>
 
-        {isOpen && (
-          <div className="chatbot-window">
-            <div className="chatbot-header">
-              <div className="chatbot-header-info">
-                <span className="chatbot-icon">🤖</span>
-                <span className="chatbot-title">AI Assistant</span>
-              </div>
-              <button className="chatbot-close" onClick={this.toggleChat}>
-                ✕
-              </button>
+        <div id="chat-window" class="chatbot-window" style="display: none;">
+          <div class="chatbot-header">
+            <div class="chatbot-header-info">
+              <span class="chatbot-icon">🤖</span>
+              <span class="chatbot-title">AI Assistant</span>
             </div>
-
-            <div className="chatbot-messages">
-              {messages.length === 0 ? (
-                <div className="chatbot-welcome">
-                  <p><strong>Hi! I'm your Robotics Assistant.</strong></p>
-                  <p>Ask me about ROS 2, simulation, NVIDIA Isaac, or anything in the book!</p>
-                </div>
-              ) : (
-                messages.map((msg) => (
-                  <div key={msg.id} className={`chatbot-message ${msg.sender}`}>
-                    {msg.text}
-                  </div>
-                ))
-              )}
-              {isLoading && (
-                <div className="chatbot-message bot">
-                  <span className="chatbot-typing">Thinking...</span>
-                </div>
-              )}
-            </div>
-
-            <form className="chatbot-form" onSubmit={this.handleSubmit}>
-              <input
-                type="text"
-                value={inputValue}
-                onChange={this.handleInputChange}
-                placeholder="Ask a question..."
-                disabled={isLoading}
-              />
-              <button type="submit" disabled={isLoading || !inputValue.trim()}>
-                Send
-              </button>
-            </form>
+            <button id="chat-close-btn" class="chatbot-close">✕</button>
           </div>
-        )}
+
+          <div id="chat-messages" class="chatbot-messages">
+            <div class="chatbot-welcome">
+              <p><strong>Hi! I'm your Robotics Assistant.</strong></p>
+              <p>Ask me about ROS 2, simulation, NVIDIA Isaac, or anything in the book!</p>
+            </div>
+          </div>
+
+          <form id="chat-form" class="chatbot-form">
+            <input id="chat-input" type="text" placeholder="Ask a question..." />
+            <button type="submit">Send</button>
+          </form>
+        </div>
       </div>
-    );
-  }
-}
+    `;
+
+    // Inject into DOM
+    document.body.insertAdjacentHTML('beforeend', chatHTML);
+
+    // Get elements
+    const fabBtn = document.getElementById('chat-fab-btn');
+    const closeBtn = document.getElementById('chat-close-btn');
+    const chatWindow = document.getElementById('chat-window');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const messagesDiv = document.getElementById('chat-messages');
+
+    // Demo responses
+    const getDemoResponse = (query) => {
+      const q = query.toLowerCase();
+      if (q.includes('ros')) return "ROS 2 is the robotics middleware framework providing communication infrastructure for robot applications.";
+      if (q.includes('simulation') || q.includes('gazebo')) return "Simulation allows testing robots virtually. Gazebo is a physics-based simulator for robotics.";
+      if (q.includes('isaac') || q.includes('nvidia')) return "NVIDIA Isaac is a platform for accelerated robotics development with photorealistic simulation.";
+      if (q.includes('vla')) return "VLA (Vision-Language-Action) models bridge natural language with robotic actions.";
+      return "I'm the Physical AI & Robotics Assistant! Ask me about ROS 2, simulation, NVIDIA Isaac, VLA, or any robotics topic.";
+    };
+
+    // Toggle chat
+    const toggleChat = () => {
+      const isHidden = chatWindow.style.display === 'none';
+      chatWindow.style.display = isHidden ? 'block' : 'none';
+      fabBtn.textContent = isHidden ? '✕' : '💬';
+    };
+
+    // Handle message submission
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      // Add user message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'chatbot-message user';
+      userMsg.textContent = text;
+      messagesDiv.appendChild(userMsg);
+
+      // Clear input
+      chatInput.value = '';
+
+      // Add bot response
+      setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'chatbot-message bot';
+        botMsg.textContent = getDemoResponse(text);
+        messagesDiv.appendChild(botMsg);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }, 500);
+    };
+
+    // Add event listeners
+    fabBtn.addEventListener('click', toggleChat);
+    closeBtn.addEventListener('click', toggleChat);
+    chatForm.addEventListener('submit', handleSubmit);
+
+    // Cleanup function
+    return () => {
+      const chatbot = document.getElementById('custom-chatbot');
+      if (chatbot) chatbot.remove();
+    };
+  }, []);
+
+  return null; // No React rendering needed
+};
 
 export default ChatInterface;
