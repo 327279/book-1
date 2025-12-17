@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import './ChatBot.css';
 
 // Vanilla JS chatbot that gets injected into the page
 const ChatInterface = () => {
