@@ -1,0 +1,102 @@
+/* ========================================
+   TextSelector Styles -Premium CSS Module
+   ======================================== */
+
+.indicator {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--z-tooltip);
+
+    padding: var(--space-3) var(--space-4);
+    background: var(--ifm-background-surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+
+    max-width: 400px;
+
+    animation: fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='dark'] .indicator {
+    background: var(--gray-800);
+    border-color: var(--gray-600);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.selectedText {
+    color: var(--ifm-font-color-base);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    font-weight: var(--font-medium);
+}
+
+.selectedText::before {
+    content: '📝 ';
+    margin-right: var(--space-2);
+}
+
+/* Fade out animation */
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+    }
+}
+
+.indicatorHiding {
+    animation: fadeOut 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .indicator {
+        bottom: 80px;
+        left: var(--space-4);
+        right: var(--space-4);
+        transform: none;
+        max-width: none;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+    }
+}

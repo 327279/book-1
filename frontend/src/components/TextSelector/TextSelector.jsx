@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styles from './TextSelector.module.css';
 
 const TextSelector = ({ onTextSelection }) => {
   const [selectedText, setSelectedText] = useState('');
@@ -20,10 +21,12 @@ const TextSelector = ({ onTextSelection }) => {
     return () => document.removeEventListener('mouseup', handleSelection);
   }, [onTextSelection]);
 
+  if (!selectedText) return null;
+
   return (
-    <div className="text-selector-indicator" style={{ display: selectedText ? 'block' : 'none' }}>
-      <span className="selected-text-preview">
-        Selected: "{selectedText.substring(0, 50)}{selectedText.length > 50 ? '...' : ''}"
+    <div className={styles.indicator}>
+      <span className={styles.selectedText}>
+        {selectedText.substring(0, 50)}{selectedText.length > 50 ? '...' : ''}
       </span>
     </div>
   );

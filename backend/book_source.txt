@@ -1,0 +1,12 @@
+
+            This is a sample book content for testing the BiblioChat backend. The AI assistant will be able to answer questions about this text content using the RAG system. You can replace this with actual book content for real usage.
+
+            Chapter 1: Introduction to AI
+            Artificial Intelligence (AI) is a branch of computer science that aims to create software or machines that exhibit human-like intelligence. This can include learning from experience, understanding natural language, solving problems, and recognizing patterns.
+
+            Chapter 2: Machine Learning Basics
+            Machine Learning is a subset of AI that focuses on algorithms that can learn from data. There are several types of machine learning including supervised learning, unsupervised learning, and reinforcement learning.
+
+            Chapter 3: Natural Language Processing
+            Natural Language Processing (NLP) is a field of AI focused on the interaction between computers and humans through natural language. The ultimate objective of NLP is to read, decipher, understand, and make sense of human languages in a manner that is valuable.
+            

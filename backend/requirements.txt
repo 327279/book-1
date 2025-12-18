@@ -1,12 +1,21 @@
-fastapi>=0.100.0
-uvicorn>=0.20.0
-pydantic>=2.0.0
-python-multipart>=0.0.6
+# Core Python dependencies for BiblioChat Backend
+
+# AI & Embeddings
+cohere>=5.0.0
+
+# Web Framework
+fastapi>=0.109.0
+uvicorn>=0.27.0
+
+# Data Validation
+pydantic>=2.5.0
+
+# Database
 sqlalchemy>=2.0.0
-python-dotenv>=1.0.0
-pyjwt>=2.8.0
-passlib>=1.7.4
-python-slugify>=8.0.0
-openai>=1.0.0
+asyncpg>=0.29.0
+
+# Vector Database
 qdrant-client>=1.7.0
-pydantic-settings>=2.0.0
+
+# Environment Variables
+python-dotenv>=1.0.0

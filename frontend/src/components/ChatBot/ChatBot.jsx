@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useColorMode } from '@docusaurus/theme-common';
 import { API_ENDPOINTS, DEMO_MODE, safeFetch } from '../../config/api';
-import './ChatBot.css';
+import styles from './ChatBot.module.css';
 
 // Demo responses for when backend is unavailable
 const DEMO_RESPONSES = {
@@ -30,6 +30,7 @@ function getDemoResponse(query) {
 }
 
 const ChatBot = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -58,6 +59,10 @@ const ChatBot = () => {
     scrollToBottom();
   }, [messages]);
 
+  const toggleChat = () => {
+    setIsOpen(!isOpen);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
@@ -80,14 +85,14 @@ const ChatBot = () => {
         botText = getDemoResponse(currentQuery);
         confidence = 0.85;
       } else {
-        // Real API call
-        const response = await safeFetch(API_ENDPOINTS.queries, {
+        // Real API call to backend /api/chat
+        const response = await safeFetch(API_ENDPOINTS.chat, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             query: currentQuery,
-            selected_text: selectedText,
-            user_id: 'docusaurus-user'
+            selection_context: selectedText || null,
+            session_id: 'docusaurus-user-session'
           })
         });
 
@@ -125,64 +130,84 @@ const ChatBot = () => {
     }
   };
 
-
   return (
-    <div className={`chat-container ${colorMode}`}>
-      <div className="chat-header">
-        <h3>Book Bot - Robotics Assistant</h3>
-        {selectedText && (
-          <div className="selected-text-preview">
-            <small>Context: "{selectedText.substring(0, 100)}{selectedText.length > 100 ? '...' : ''}"</small>
-          </div>
-        )}
-      </div>
+    <>
+      {/* Floating Action Button */}
+      <button
+        className={styles.fab}
+        onClick={toggleChat}
+        aria-label={isOpen ? 'Close chat' : 'Open chat'}
+      >
+        {isOpen ? '✕' : '💬'}
+      </button>
 
-      <div className="chat-messages">
-        {messages.length === 0 ? (
-          <div className="welcome-message">
-            <p>Hello! I'm your Robotics Book Assistant.</p>
-            <p>Ask me questions about the content, or select text on the page and ask about it specifically!</p>
-          </div>
-        ) : (
-          messages.map((message) => (
-            <div
-              key={message.id}
-              className={`message ${message.sender} ${message.error ? 'error' : ''}`}
+      {/* Chat Window */}
+      {isOpen && (
+        <div className={styles.window}>
+          <div className={styles.header}>
+            <div className={styles.headerInfo}>
+              <span className={styles.icon}>🤖</span>
+              <h3 className={styles.title}>Book Bot</h3>
+            </div>
+            <button
+              type="button"
+              className={styles.closeButton}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setIsOpen(false);
+              }}
+              aria-label="Close chat"
             >
-              <div className="message-content">
-                <p>{message.text}</p>
-                {message.sources && message.sources.length > 0 && (
-                  <div className="sources">
-                    <small>Sources: {message.sources.map(s => `Ch. ${s.chapter}`).join(', ')}</small>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))
-        )}
-        {isLoading && (
-          <div className="message bot">
-            <div className="message-content">
-              <p>Thinking...</p>
-            </div>
+              ✕
+            </button>
           </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
 
-      <form className="chat-input-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Ask a question about robotics..."
-          disabled={isLoading}
-        />
-        <button type="submit" disabled={isLoading || !inputValue.trim()}>
-          {isLoading ? 'Sending...' : 'Send'}
-        </button>
-      </form>
-    </div>
+          <div className={styles.messages}>
+            {messages.length === 0 ? (
+              <div className={styles.welcome}>
+                <p><strong>Hello! I'm your Robotics Book Assistant.</strong></p>
+                <p>Ask me questions about the content, or select text on the page and ask about it specifically!</p>
+              </div>
+            ) : (
+              messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`${styles.message} ${message.sender === 'user' ? styles.userMessage : styles.botMessage}`}
+                >
+                  <p>{message.text}</p>
+                  {message.sources && message.sources.length > 0 && (
+                    <div className={styles.sources}>
+                      <small>Sources: {message.sources.map(s => `Ch. ${s.chapter}`).join(', ')}</small>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+            {isLoading && (
+              <div className={`${styles.message} ${styles.botMessage}`}>
+                <p className={styles.typing}>Thinking...</p>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <input
+              className={styles.input}
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Ask a question about robotics..."
+              disabled={isLoading}
+            />
+            <button className={styles.sendButton} type="submit" disabled={isLoading || !inputValue.trim()}>
+              {isLoading ? 'Sending...' : 'Send'}
+            </button>
+          </form>
+        </div>
+      )}
+    </>
   );
 };
 

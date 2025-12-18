@@ -1,49 +1,55 @@
 /**
  * API Configuration
- * Uses environment variable for backend URL, falls back to localhost for development
+ * Backend URL configuration for Physical AI & Humanoid Robotics textbook
  */
 
 // Backend API base URL
-export const API_BASE_URL = typeof window !== 'undefined'
-    ? (window.__ENV__?.API_URL || 'http://localhost:8000')
-    : 'http://localhost:8000';
+// Priority: 1) Runtime config, 2) Docusaurus config, 3) localhost fallback
+export const API_BASE_URL = (() => {
+    if (typeof window !== 'undefined') {
+        // Check for runtime config first
+        if (window.__ENV__?.API_URL) return window.__ENV__.API_URL;
+        // Check for Docusaurus site config
+        if (window.docusaurusConfig?.customFields?.apiUrl) return window.docusaurusConfig.customFields.apiUrl;
+    }
+    // Fallback to localhost for development
+    return 'http://localhost:8000';
+})();
 
-// Check if we're in production (Vercel deployment)
+// Check if we're in production
 export const IS_PRODUCTION = typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost';
 
-// API endpoints
+// API endpoints - matching backend routes in main.py
 export const API_ENDPOINTS = {
-    queries: `${API_BASE_URL}/api/v1/queries/`,
-    agentSkill: `${API_BASE_URL}/api/v1/agent/skill`,
-    userProfile: `${API_BASE_URL}/api/v1/users/profile`,
-    auth: `${API_BASE_URL}/api/auth`,
+    chat: `${API_BASE_URL}/api/chat`,
+    chatHistory: (sessionId) => `${API_BASE_URL}/api/chat/history/${sessionId}`,
+    health: `${API_BASE_URL}/api/health`,
 };
 
-// Demo/Mock mode - enabled when backend is unavailable
-export const DEMO_MODE = IS_PRODUCTION;
+// For backward compatibility - always try real API
+export const DEMO_MODE = false;
 
 /**
  * Safe fetch wrapper that handles backend unavailability gracefully
+ * Always attempts the real API call, returns error response if fails
  */
 export async function safeFetch(url, options = {}) {
-    if (DEMO_MODE) {
-        return { ok: false, demo: true, status: 503 };
-    }
-
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout for serverless cold starts
 
         const response = await fetch(url, {
             ...options,
             signal: controller.signal
+
         });
 
         clearTimeout(timeoutId);
         return response;
     } catch (error) {
-        console.warn('API unavailable:', error.message);
+        console.warn('API call failed:', error.message);
         return { ok: false, error: error.message, status: 0 };
     }
 }
+
