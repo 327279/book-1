@@ -41,7 +41,7 @@ const ChatInterface = () => {
           💬
         </button>
 
-        <div id="chat-window" class="chatbot-window" style="display: none !important;">
+        <div id="chat-window" class="chatbot-window" style="display: none;">
           <div class="chatbot-header">
             <div class="chatbot-header-info">
               <span class="chatbot-icon">🤖</span>
