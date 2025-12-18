@@ -57,7 +57,7 @@ const ChatInterface = () => {
             </div>
           </div>
 
-          <form id="chat-form" class="chatbot-form" onsubmit="event.preventDefault(); document.getElementById('chat-submit-handler')();">
+          <form id="chat-form" class="chatbot-form" onsubmit="event.preventDefault(); window.handleChatSubmit(); return false;">
             <input id="chat-input" type="text" placeholder="Ask a question..." />
             <button type="submit" id="chat-send-btn">Send</button>
           </form>
@@ -111,9 +111,6 @@ const ChatInterface = () => {
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
       }, 500);
     };
-
-    // Store submit handler globally
-    document.getElementById('chat-submit-handler') = window.handleChatSubmit;
 
     // Add backup event listeners (in addition to inline onclick)
     if (fabBtn) {
