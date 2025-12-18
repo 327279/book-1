@@ -1,4 +1,4 @@
-/* ===== Landing Page Styles ===== */
+/* ===== Premium Landing Page Styles ===== */
 
 /* Hero Section */
 .hero {
@@ -31,12 +31,26 @@
     display: inline-block;
     background: rgba(255, 255, 255, 0.15);
     color: white;
-    padding: 6px 16px;
-    border-radius: 20px;
+    padding: 8px 18px;
+    border-radius: 24px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 24px;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .heroTitle {
@@ -46,16 +60,18 @@
     line-height: 1.1;
     margin: 0 0 24px 0;
     letter-spacing: -0.02em;
+    animation: fadeInUp 0.6s ease-out 0.1s backwards;
 }
 
 .heroSubtitle {
-    font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.9);
-    margin: 0 0 32px 0;
-    line-height: 1.6;
-    max-width: 600px;
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 40px 0;
+    line-height: 1.7;
+    max-width: 650px;
     margin-left: auto;
     margin-right: auto;
+    animation: fadeInUp 0.6s ease-out 0.2s backwards;
 }
 
 .heroButtons {
@@ -63,45 +79,54 @@
     gap: 16px;
     justify-content: center;
     flex-wrap: wrap;
+    animation: fadeInUp 0.6s ease-out 0.3s backwards;
 }
 
 .primaryButton {
     display: inline-flex;
     align-items: center;
-    padding: 14px 32px;
+    justify-content: center;
+    padding: 16px 36px;
     background: white;
     color: #1e3a8a;
-    border-radius: 8px;
-    font-weight: 600;
+    border-radius: 12px;
+    font-weight: 700;
     font-size: 16px;
     text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
 .primaryButton:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
     text-decoration: none;
     color: #1e3a8a;
+}
+
+.primaryButton:active {
+    transform: translateY(-1px);
 }
 
 .secondaryButton {
     display: inline-flex;
     align-items: center;
-    padding: 14px 32px;
-    background: transparent;
+    justify-content: center;
+    padding: 16px 36px;
+    background: rgba(255, 255, 255, 0.1);
     color: white;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    font-weight: 600;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    font-weight: 700;
     font-size: 16px;
     text-decoration: none;
-    transition: background 0.2s, border-color 0.2s;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .secondaryButton:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.6);
     text-decoration: none;
     color: white;
 }
@@ -109,7 +134,7 @@
 /* Stats Section */
 .stats {
     background: #f8fafc;
-    padding: 48px 24px;
+    padding: 60px 24px;
     border-bottom: 1px solid #e2e8f0;
 }
 
@@ -126,34 +151,61 @@
 .stats .container {
     display: flex;
     justify-content: center;
-    gap: 64px;
+    gap: 80px;
     flex-wrap: wrap;
 }
 
 .statItem {
     text-align: center;
+    animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.statItem:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.statItem:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.statItem:nth-child(3) {
+    animation-delay: 0.3s;
 }
 
 .statNumber {
     display: block;
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: 800;
-    color: #2563eb;
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     line-height: 1;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+}
+
+[data-theme='dark'] .statNumber {
+    background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .statLabel {
     font-size: 14px;
     color: #64748b;
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+}
+
+[data-theme='dark'] .statLabel {
+    color: #94a3b8;
 }
 
 /* Features Section */
 .features {
-    padding: 80px 24px;
+    padding: 100px 24px;
     background: white;
 }
 
@@ -163,10 +215,11 @@
 
 .sectionTitle {
     text-align: center;
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 2.5rem;
+    font-weight: 800;
     color: #0f172a;
-    margin: 0 0 48px 0;
+    margin: 0 0 64px 0;
+    animation: fadeInUp 0.6s ease-out;
 }
 
 [data-theme='dark'] .sectionTitle {
@@ -176,7 +229,7 @@
 .featureGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
+    gap: 32px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -184,17 +237,36 @@
 .featureCard {
     display: flex;
     flex-direction: column;
-    padding: 32px;
+    padding: 40px 32px;
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 20px;
     text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.featureCard:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.featureCard:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.featureCard:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.featureCard:nth-child(4) {
+    animation-delay: 0.4s;
 }
 
 .featureCard:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(37, 99, 235, 0.12);
     border-color: #2563eb;
     text-decoration: none;
 }
@@ -206,18 +278,21 @@
 
 [data-theme='dark'] .featureCard:hover {
     border-color: #3b82f6;
+    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
 }
 
 .featureIcon {
-    font-size: 2.5rem;
-    margin-bottom: 16px;
+    font-size: 3rem;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
 
 .featureTitle {
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: 1.4rem;
+    font-weight: 700;
     color: #0f172a;
-    margin: 0 0 12px 0;
+    margin: 0 0 16px 0;
+    line-height: 1.3;
 }
 
 [data-theme='dark'] .featureTitle {
@@ -227,15 +302,27 @@
 .featureDescription {
     font-size: 15px;
     color: #64748b;
-    line-height: 1.6;
-    margin: 0 0 16px 0;
+    line-height: 1.7;
+    margin: 0 0 20px 0;
     flex-grow: 1;
 }
 
+[data-theme='dark'] .featureDescription {
+    color: #94a3b8;
+}
+
 .featureLink {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
     color: #2563eb;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.featureCard:hover .featureLink {
+    gap: 10px;
 }
 
 [data-theme='dark'] .featureLink {
@@ -245,11 +332,11 @@
 /* Responsive */
 @media (max-width: 768px) {
     .heroTitle {
-        font-size: 2.25rem;
+        font-size: 2.5rem;
     }
 
     .heroSubtitle {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
     .hero {
@@ -257,18 +344,43 @@
     }
 
     .stats .container {
-        gap: 32px;
+        gap: 48px;
     }
 
     .statNumber {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
 
     .features {
-        padding: 60px 20px;
+        padding: 80px 20px;
     }
 
     .sectionTitle {
-        font-size: 1.5rem;
+        font-size: 2rem;
+        margin-bottom: 48px;
+    }
+
+    .featureGrid {
+        gap: 24px;
+    }
+
+    .featureCard {
+        padding: 32px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .heroTitle {
+        font-size: 2rem;
+    }
+
+    .heroSubtitle {
+        font-size: 1rem;
+    }
+
+    .primaryButton,
+    .secondaryButton {
+        width: 100%;
+        max-width: 320px;
     }
 }

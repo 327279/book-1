@@ -4,7 +4,7 @@
  */
 
 // Backend API base URL
-// Priority: 1) Docusaurus custom field, 2) Build-time env var, 3) localhost fallback
+// Priority: 1) Runtime config, 2) Docusaurus config, 3) localhost fallback
 export const API_BASE_URL = (() => {
     if (typeof window !== 'undefined') {
         // Check for runtime config first
@@ -12,8 +12,8 @@ export const API_BASE_URL = (() => {
         // Check for Docusaurus site config
         if (window.docusaurusConfig?.customFields?.apiUrl) return window.docusaurusConfig.customFields.apiUrl;
     }
-    // Build-time env or fallback
-    return process.env.VITE_API_URL || 'http://localhost:8000';
+    // Fallback to localhost for development
+    return 'http://localhost:8000';
 })();
 
 // Check if we're in production

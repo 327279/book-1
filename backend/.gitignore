@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+env/
+ENV/
+.venv/
+.env
+.env.local
+.env.local.example
+.env.example
+.env.*.local
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+.DS_Store
+Thumbs.db
+
+# FastAPI / uvicorn
+*.log
+uvicorn_error.log
+uvicorn_access.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.db-journal
+
+# Local development
+.env.local
+.env.dev
+.env.test
+
+# Backend specific
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd

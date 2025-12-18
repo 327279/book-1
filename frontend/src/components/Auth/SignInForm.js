@@ -27,53 +27,56 @@ export default function SignInForm() {
     };
 
     return (
-        <div className="card margin-vert--lg padding--lg">
-            <h2>👋 Welcome Back</h2>
-            <p>Sign in to continue your Physical AI learning journey.</p>
-
-            {error && (
-                <div className="alert alert--danger margin-bottom--md">
-                    {error}
-                </div>
-            )}
-
-            <form onSubmit={handleSubmit}>
-                <div className="margin-bottom--md">
-                    <label><strong>Email</strong></label>
-                    <input
-                        className="button button--block button--outline button--secondary"
-                        type="email"
-                        placeholder="your@email.com"
-                        required
-                        value={formData.email}
-                        onChange={e => setFormData({ ...formData, email: e.target.value })}
-                    />
+        <div className={styles.card}>
+            <div className={styles.container}>
+                <div className={styles.header}>
+                    <h2 className={styles.title}>👋 Welcome Back</h2>
+                    <p className={styles.subtitle}>Sign in to continue your Physical AI learning journey.</p>
                 </div>
 
-                <div className="margin-bottom--md">
-                    <label><strong>Password</strong></label>
-                    <input
-                        className="button button--block button--outline button--secondary"
-                        type="password"
-                        placeholder="Your password"
-                        required
-                        value={formData.password}
-                        onChange={e => setFormData({ ...formData, password: e.target.value })}
-                    />
-                </div>
+                {error && (
+                    <div className={styles.error}>{error}</div>
+                )}
 
-                <button
-                    type="submit"
-                    className="button button--primary button--block"
-                    disabled={loading}
-                >
-                    {loading ? 'Signing In...' : '🔐 Sign In'}
-                </button>
+                <form className={styles.form} onSubmit={handleSubmit}>
+                    <div className={styles.fieldGroup}>
+                        <label className={styles.label}>Email</label>
+                        <input
+                            className={styles.input}
+                            type="email"
+                            placeholder="your@email.com"
+                            required
+                            value={formData.email}
+                            onChange={e => setFormData({ ...formData, email: e.target.value })}
+                        />
+                    </div>
 
-                <p className="text--center margin-top--md">
-                    Don't have an account? <a href="/signup">Sign Up</a>
-                </p>
-            </form>
+                    <div className={styles.fieldGroup}>
+                        <label className={styles.label}>Password</label>
+                        <input
+                            className={styles.input}
+                            type="password"
+                            placeholder="Your password"
+                            required
+                            value={formData.password}
+                            onChange={e => setFormData({ ...formData, password: e.target.value })}
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className={styles.button}
+                        disabled={loading}
+                    >
+                        {loading ? 'Signing In...' : '🔐 Sign In'}
+                    </button>
+
+                    <div className={styles.linkContainer}>
+                        Don't have an account? <a className={styles.link} href="/signup">Sign Up</a>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }
+
