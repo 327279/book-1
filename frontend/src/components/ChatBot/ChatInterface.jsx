@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './ChatBot.css';
 
-// Vanilla JS chatbot that gets injected into the page
+// Chatbot with global event handlers - v2
 const ChatInterface = () => {
   useEffect(() => {
     // Remove any existing chatbot first
