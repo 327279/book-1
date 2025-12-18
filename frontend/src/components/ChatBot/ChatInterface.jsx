@@ -4,22 +4,50 @@ import './ChatBot.css';
 // Vanilla JS chatbot that gets injected into the page
 const ChatInterface = () => {
   useEffect(() => {
-    // Only inject once
-    if (document.getElementById('custom-chatbot')) return;
+    // Remove any existing chatbot first
+    const existingChatbot = document.getElementById('custom-chatbot');
+    if (existingChatbot) {
+      existingChatbot.remove();
+    }
+
+    // Define close function globally so inline onclick can use it
+    window.closeChatbot = function () {
+      const chatWindow = document.getElementById('chat-window');
+      const fabBtn = document.getElementById('chat-fab-btn');
+      if (chatWindow) chatWindow.style.display = 'none';
+      if (fabBtn) fabBtn.textContent = '💬';
+    };
+
+    window.openChatbot = function () {
+      const chatWindow = document.getElementById('chat-window');
+      const fabBtn = document.getElementById('chat-fab-btn');
+      if (chatWindow) chatWindow.style.display = 'block';
+      if (fabBtn) fabBtn.textContent = '✕';
+    };
+
+    window.toggleChatbot = function () {
+      const chatWindow = document.getElementById('chat-window');
+      if (!chatWindow) return;
+      if (chatWindow.style.display === 'none' || !chatWindow.style.display) {
+        window.openChatbot();
+      } else {
+        window.closeChatbot();
+      }
+    };
 
     const chatHTML = `
       <div id="custom-chatbot">
-        <button id="chat-fab-btn" class="chat-fab" aria-label="Open chat">
+        <button id="chat-fab-btn" class="chat-fab" aria-label="Open chat" onclick="window.toggleChatbot(); return false;">
           💬
         </button>
 
-        <div id="chat-window" class="chatbot-window" style="display: none;">
+        <div id="chat-window" class="chatbot-window" style="display: none !important;">
           <div class="chatbot-header">
             <div class="chatbot-header-info">
               <span class="chatbot-icon">🤖</span>
               <span class="chatbot-title">AI Assistant</span>
             </div>
-            <button id="chat-close-btn" type="button" class="chatbot-close" onclick="document.getElementById('chat-window').style.display='none'; document.getElementById('chat-fab-btn').textContent='💬';">✕</button>
+            <button id="chat-close-btn" type="button" class="chatbot-close" onclick="window.closeChatbot(); return false;">✕</button>
           </div>
 
           <div id="chat-messages" class="chatbot-messages">
@@ -29,9 +57,9 @@ const ChatInterface = () => {
             </div>
           </div>
 
-          <form id="chat-form" class="chatbot-form">
+          <form id="chat-form" class="chatbot-form" onsubmit="event.preventDefault(); document.getElementById('chat-submit-handler')();">
             <input id="chat-input" type="text" placeholder="Ask a question..." />
-            <button type="submit">Send</button>
+            <button type="submit" id="chat-send-btn">Send</button>
           </form>
         </div>
       </div>
@@ -40,13 +68,12 @@ const ChatInterface = () => {
     // Inject into DOM
     document.body.insertAdjacentHTML('beforeend', chatHTML);
 
-    // Get elements
-    const fabBtn = document.getElementById('chat-fab-btn');
-    const closeBtn = document.getElementById('chat-close-btn');
-    const chatWindow = document.getElementById('chat-window');
+    // Get elements after injection
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
     const messagesDiv = document.getElementById('chat-messages');
+    const fabBtn = document.getElementById('chat-fab-btn');
+    const closeBtn = document.getElementById('chat-close-btn');
 
     // Demo responses
     const getDemoResponse = (query) => {
@@ -58,36 +85,11 @@ const ChatInterface = () => {
       return "I'm the Physical AI & Robotics Assistant! Ask me about ROS 2, simulation, NVIDIA Isaac, VLA, or any robotics topic.";
     };
 
-    // Open chat function
-    const openChat = (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      chatWindow.style.display = 'block';
-      fabBtn.textContent = '✕';
-    };
-
-    // Close chat function
-    const closeChat = (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      chatWindow.style.display = 'none';
-      fabBtn.textContent = '💬';
-    };
-
-    // Toggle function for FAB
-    const toggleChat = (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      if (chatWindow.style.display === 'none') {
-        openChat(e);
-      } else {
-        closeChat(e);
-      }
-    };
-
     // Handle message submission
-    const handleSubmit = (e) => {
-      e.preventDefault();
+    window.handleChatSubmit = function () {
+      const chatInput = document.getElementById('chat-input');
+      const messagesDiv = document.getElementById('chat-messages');
+
       const text = chatInput.value.trim();
       if (!text) return;
 
@@ -110,15 +112,41 @@ const ChatInterface = () => {
       }, 500);
     };
 
-    // Add event listeners
-    fabBtn.addEventListener('click', toggleChat);
-    closeBtn.addEventListener('click', closeChat);
-    chatForm.addEventListener('submit', handleSubmit);
+    // Store submit handler globally
+    document.getElementById('chat-submit-handler') = window.handleChatSubmit;
+
+    // Add backup event listeners (in addition to inline onclick)
+    if (fabBtn) {
+      fabBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.toggleChatbot();
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.closeChatbot();
+      });
+    }
+
+    if (chatForm) {
+      chatForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        window.handleChatSubmit();
+      });
+    }
 
     // Cleanup function
     return () => {
       const chatbot = document.getElementById('custom-chatbot');
       if (chatbot) chatbot.remove();
+      delete window.closeChatbot;
+      delete window.openChatbot;
+      delete window.toggleChatbot;
+      delete window.handleChatSubmit;
     };
   }, []);
 
