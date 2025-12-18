@@ -14,21 +14,21 @@ const ChatInterface = () => {
     window.closeChatbot = function () {
       const chatWindow = document.getElementById('chat-window');
       const fabBtn = document.getElementById('chat-fab-btn');
-      if (chatWindow) chatWindow.classList.add('hidden');
+      if (chatWindow) chatWindow.style.display = 'none';
       if (fabBtn) fabBtn.textContent = '💬';
     };
 
     window.openChatbot = function () {
       const chatWindow = document.getElementById('chat-window');
       const fabBtn = document.getElementById('chat-fab-btn');
-      if (chatWindow) chatWindow.classList.remove('hidden');
+      if (chatWindow) chatWindow.style.display = 'flex';
       if (fabBtn) fabBtn.textContent = '✕';
     };
 
     window.toggleChatbot = function () {
       const chatWindow = document.getElementById('chat-window');
       if (!chatWindow) return;
-      if (chatWindow.classList.contains('hidden')) {
+      if (chatWindow.style.display === 'none' || !chatWindow.style.display) {
         window.openChatbot();
       } else {
         window.closeChatbot();
@@ -41,7 +41,7 @@ const ChatInterface = () => {
           💬
         </button>
 
-        <div id="chat-window" class="chatbot-window hidden">
+        <div id="chat-window" class="chatbot-window" style="display: none;">
           <div class="chatbot-header">
             <div class="chatbot-header-info">
               <span class="chatbot-icon">🤖</span>
