@@ -58,11 +58,31 @@ const ChatInterface = () => {
       return "I'm the Physical AI & Robotics Assistant! Ask me about ROS 2, simulation, NVIDIA Isaac, VLA, or any robotics topic.";
     };
 
-    // Toggle chat
-    const toggleChat = () => {
-      const isHidden = chatWindow.style.display === 'none';
-      chatWindow.style.display = isHidden ? 'block' : 'none';
-      fabBtn.textContent = isHidden ? '✕' : '💬';
+    // Open chat function
+    const openChat = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      chatWindow.style.display = 'block';
+      fabBtn.textContent = '✕';
+    };
+
+    // Close chat function
+    const closeChat = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      chatWindow.style.display = 'none';
+      fabBtn.textContent = '💬';
+    };
+
+    // Toggle function for FAB
+    const toggleChat = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (chatWindow.style.display === 'none') {
+        openChat(e);
+      } else {
+        closeChat(e);
+      }
     };
 
     // Handle message submission
@@ -92,7 +112,7 @@ const ChatInterface = () => {
 
     // Add event listeners
     fabBtn.addEventListener('click', toggleChat);
-    closeBtn.addEventListener('click', toggleChat);
+    closeBtn.addEventListener('click', closeChat);
     chatForm.addEventListener('submit', handleSubmit);
 
     // Cleanup function
