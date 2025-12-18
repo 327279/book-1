@@ -19,7 +19,7 @@ const ChatInterface = () => {
               <span class="chatbot-icon">🤖</span>
               <span class="chatbot-title">AI Assistant</span>
             </div>
-            <button id="chat-close-btn" class="chatbot-close">✕</button>
+            <button id="chat-close-btn" type="button" class="chatbot-close" onclick="document.getElementById('chat-window').style.display='none'; document.getElementById('chat-fab-btn').textContent='💬';">✕</button>
           </div>
 
           <div id="chat-messages" class="chatbot-messages">
