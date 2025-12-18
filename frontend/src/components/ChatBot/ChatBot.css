@@ -60,6 +60,11 @@
   animation: chatbotSlideIn 0.25s ease-out !important;
 }
 
+/* Hidden state for chat window */
+.chatbot-window.hidden {
+  display: none !important;
+}
+
 @keyframes chatbotSlideIn {
   from {
     opacity: 0;
