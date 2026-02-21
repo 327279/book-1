@@ -9,7 +9,7 @@ import LayoutProvider from '@theme/Layout/Provider';
 import ErrorBoundary from '@docusaurus/ErrorBoundary';
 import { PageMetadata, ThemeClassNames } from '@docusaurus/theme-common';
 import { translate } from '@docusaurus/Translate';
-import ChatInterface from '@site/src/components/ChatBot/ChatInterface';
+import ChatBot from '@site/src/components/ChatBot/ChatBot';
 
 import styles from './styles.module.css';
 
@@ -34,14 +34,14 @@ function Layout(props) {
         <main className={clsx(pageClassName)} itemProp="mainContentOfPage">
           {children}
         </main>
-        <ChatInterface />
+        <ChatBot />
       </div>
       {!noFooter && <Footer />}
     </LayoutProvider>
   );
 }
 
-export default function(props) {
+export default function (props) {
   return (
     <ErrorBoundary
       fallback={(params) => (

@@ -6,36 +6,37 @@ import json
 import os
 
 class handler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        """Handle GET requests"""
-        self.send_response(200)
+    def _set_headers(self, status=200):
+        self.send_response(status)
         self.send_header('Content-type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
-        
-        path = self.path.split('?')[0]  # Remove query params
+
+    def do_GET(self):
+        """Handle GET requests"""
+        path = self.path.split('?')[0]
         
         if path == '/' or path == '':
             response = {
-                "message": "BiblioChat API is running on Vercel!",
+                "message": "BiblioChat API is running!",
                 "status": "healthy",
                 "endpoints": ["/api/health", "/api/chat"]
             }
+            self._set_headers(200)
         elif path == '/api/health':
-            response = {"status": "healthy", "platform": "vercel"}
-        elif path == '/favicon.ico':
-            # Return empty response for favicon
-            response = {}
+            response = {"status": "healthy", "platform": "local"}
+            self._set_headers(200)
         else:
             response = {"error": "Not Found", "path": path}
+            self._set_headers(404)
         
         self.wfile.write(json.dumps(response).encode())
         return
 
     def do_POST(self):
         """Handle POST requests"""
-        self.send_header('Access-Control-Allow-Origin', '*')
-        
         if self.path == '/api/chat':
             try:
                 content_length = int(self.headers.get('Content-Length', 0))
@@ -58,41 +59,35 @@ class handler(BaseHTTPRequestHandler):
                         else:
                             prompt = f"You are a helpful robotics assistant for a Physical AI & Humanoid Robotics textbook. Question: {query}"
                         
-                        response = co.chat(message=prompt, model="command-r")
+                        print("Calling Cohere API...")
+                        # Use current supported model (as of 2026)
+                        response = co.chat(message=prompt, model="command-a-03-2025")
                         ai_response = response.text
+                        print("Cohere response received.")
                     except Exception as e:
-                        ai_response = f"Cohere error: {str(e)}"
+                        print(f"Cohere client error: {str(e)}")
+                        # If API fails, fallback to demo response
+                        ai_response = self.get_demo_response(query)
                 else:
-                    # Demo response if no API key
+                    print("No COHERE_API_KEY found, using demo response.")
                     ai_response = self.get_demo_response(query)
                 
-                self.send_response(200)
-                self.send_header('Content-type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-                
+                self._set_headers(200)
                 response = {"response": ai_response, "sources": []}
                 self.wfile.write(json.dumps(response).encode())
                 
             except Exception as e:
-                self.send_response(500)
-                self.send_header('Content-type', 'application/json')
-                self.end_headers()
+                print(f"POST error: {str(e)}")
+                self._set_headers(500)
                 self.wfile.write(json.dumps({"error": str(e)}).encode())
         else:
-            self.send_response(404)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
+            self._set_headers(404)
             self.wfile.write(json.dumps({"error": "Not Found"}).encode())
         return
 
     def do_OPTIONS(self):
         """Handle CORS preflight"""
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers()
+        self._set_headers(200)
         return
     
     def get_demo_response(self, query):
@@ -108,3 +103,19 @@ class handler(BaseHTTPRequestHandler):
             return "VLA (Vision-Language-Action) models bridge natural language with robotic actions."
         else:
             return "I'm the Physical AI & Robotics Assistant! Ask about ROS 2, simulation, NVIDIA Isaac, or VLA."
+
+if __name__ == "__main__":
+    from http.server import HTTPServer
+    from dotenv import load_dotenv
+    
+    # Load environment variables from .env
+    load_dotenv()
+    
+    port = int(os.environ.get("PORT", 8000))
+    server = HTTPServer(('0.0.0.0', port), handler)
+    print(f"Starting BiblioChat Backend on port {port}...")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nStopping server...")
+        server.server_close()

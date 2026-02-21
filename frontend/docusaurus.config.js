@@ -98,7 +98,7 @@ const config = {
           },
           {
             to: '/signup',
-            label: 'Join Class 🚀',
+            label: 'Join Class',
             position: 'right',
             className: 'button button--primary button--sm margin-left--sm',
           },
